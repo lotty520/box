@@ -1,2 +1,2 @@
-# string-box
+# box
 string encryption for java.
