@@ -1,0 +1,31 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        google()
+        jcenter()
+    }
+    def pluginVersion = rootProject.properties.get("plugin")
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.1.0'
+        classpath "com.github.box:plugin:" + pluginVersion
+    }
+}
+
+
+// gtradle 2.1 以上的集成方式
+plugins {
+    id "com.jfrog.bintray" version "1.8.4"
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        google()
+        jcenter()
+
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

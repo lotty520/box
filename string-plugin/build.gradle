@@ -1,0 +1,99 @@
+apply plugin: 'groovy'
+apply plugin: "maven-publish"
+apply plugin: 'com.jfrog.bintray'
+
+//Groovy 编译选项
+compileGroovy {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    options.encoding = "UTF-8"
+}
+
+def libVersion = rootProject.properties.get("lib")
+def libImpl = 'com.github.box:string:' + libVersion + "@jar"
+// 依赖
+dependencies {
+    implementation gradleApi()
+    implementation libImpl
+    implementation 'com.android.tools.build:gradle:3.1.0'
+}
+
+//任务
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveClassifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    archiveClassifier = 'sources'
+}
+
+ // pom配置
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "lotty"
+            name "lotty-tj"
+            email "wuh24.tj@gmail.com"
+        }
+    }
+
+    scm {
+        url "https://github.com/lotty520/box"
+    }
+}
+
+def bintrayUser = rootProject.properties.get("bintray.user")
+def bintrayKey = rootProject.properties.get("bintray.apikey")
+def pluginVersion = rootProject.properties.get("plugin.version")
+
+bintray {
+    user = bintrayUser
+    key = bintrayKey
+    publications = ['stringPlugin']
+    pkg {
+        repo = 'maven'
+        name = 'string-box'
+        userOrg = 'lotty-tj'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/lotty520/box.git'
+        publish = true
+        version {
+            name = pluginVersion
+            desc = 'java aop class inject plugin'
+            released = new Date()
+        }
+    }
+}
+
+
+publishing {
+    publications {
+        stringPlugin(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+
+            groupId 'com.github.box'
+            artifactId 'plugin'
+            version pluginVersion
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('url', 'https://github.com/lotty520/box')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+
+
+
