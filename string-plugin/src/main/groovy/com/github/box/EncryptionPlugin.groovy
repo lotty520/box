@@ -205,11 +205,11 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
      */
     private static boolean checkClassFile(String name, PluginConfig config) {
         def postfix = name.endsWith(".class")
-        def slef = name.startsWith("com.github.box")
+        def self = name.startsWith("com.github.box")
         if (!postfix) {
             return false
         }
-        if (slef) {
+        if (self) {
             return false
         }
         String[] exclude = config.exclude

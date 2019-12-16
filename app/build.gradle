@@ -7,11 +7,11 @@ stringExt {
 
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.github.sdkanalyzer"
         minSdkVersion 19
-        targetSdkVersion 29
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
