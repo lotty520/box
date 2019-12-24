@@ -61,7 +61,7 @@ bintray {
     publications = ['stringPlugin']
     pkg {
         repo = 'maven'
-        name = 'string-box'
+        name = 'box'
         userOrg = 'lotty-tj'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/lotty520/box.git'
