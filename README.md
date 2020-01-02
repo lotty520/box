@@ -46,7 +46,7 @@ implementation 'com.github.box:string:1.0.5'
 
 需要注意的是，Lib版本应该与Plugin版本保持一致
 
-2. 将加解密库文件Jar打包到SDK的`lib`中，添加运行时依赖：
+2. 将加解密库文件Jar打包到SDK的`libs`中，添加运行时依赖：
 
 ```
   runtimeOnly files('libs/string-1.0.5.jar')
@@ -72,7 +72,22 @@ exclude|字符数组|声明不参加加密的类名路径：startWith匹配规�
 include|字符数组|声明强制参与加密的类名路径：startWith匹配规则
 
 ### 加密规则说明
-1. Base64 编码采用的NO_WRAP模式，且解密方法是通过反射调用的`android.util.Base64`下的静态方法，所以不适用通用java项目
+1. Base64 编码采用的NO_WRAP模式，且解密方法是通过反射调用的`android.util.Base64`下的静态方法，所以不适用通用java项目(主要是因为java base64api 在android sdk api26 以后才支持)
 2. Hex 16进制编码会将原始字符串的体积增倍，不建议使用
 3. Xor 异或加密采用的8位随机秘钥，一次一密
 4. Aes 加密采用的16位随机秘钥 和 16位随机IV，一次一密
+
+### License
+```
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+```
