@@ -1,4 +1,1 @@
-include ':app'
-include ':string-box'
-include ':string-plugin'
-include ':app-lib'
+include ':app', ':string-box', ':string-plugin', ':app-lib'
