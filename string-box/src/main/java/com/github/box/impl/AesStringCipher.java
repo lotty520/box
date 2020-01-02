@@ -22,20 +22,11 @@ public class AesStringCipher implements StringCipher {
 
   private static final String MODE = "AES/CBC/PKCS5Padding";
   private static final String CIPHER = "AES";
-  private final static int KEY_SIZE = 16;
-
-  public String randomKey;
-  public String randomIv;
-
-  public AesStringCipher() {
-    randomKey = CipherUtil.randomString(KEY_SIZE);
-    randomIv = CipherUtil.randomString(KEY_SIZE);
-  }
 
   @Override
-  public String dd(String value) {
-    SecretKey ks = new SecretKeySpec(randomKey.getBytes(), CIPHER);
-    IvParameterSpec iv = new IvParameterSpec(randomIv.getBytes());
+  public String dd(String value, String k, String i) {
+    SecretKey ks = new SecretKeySpec(k.getBytes(), CIPHER);
+    IvParameterSpec iv = new IvParameterSpec(i.getBytes());
     try {
       Cipher cipher = Cipher.getInstance(MODE);
       cipher.init(Cipher.DECRYPT_MODE, ks, iv);
@@ -60,9 +51,9 @@ public class AesStringCipher implements StringCipher {
   }
 
   @Override
-  public String ee(String value) {
-    Key ks = new SecretKeySpec(randomKey.getBytes(), CIPHER);
-    IvParameterSpec iv = new IvParameterSpec(randomIv.getBytes());
+  public String ee(String value, String k, String i) {
+    Key ks = new SecretKeySpec(k.getBytes(), CIPHER);
+    IvParameterSpec iv = new IvParameterSpec(i.getBytes());
     try {
       Cipher cipher = Cipher.getInstance(MODE);
       cipher.init(Cipher.ENCRYPT_MODE, ks, iv);

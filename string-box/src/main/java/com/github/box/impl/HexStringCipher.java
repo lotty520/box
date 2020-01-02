@@ -10,7 +10,7 @@ public class HexStringCipher implements StringCipher {
   private final static String HEX_PREFIX = "0x";
 
   @Override
-  public String dd(String value) {
+  public String dd(String value, String k, String iv) {
     int byteLen = value.length() / 2;
     byte[] ret = new byte[byteLen];
     for (int i = 0; i < byteLen; i++) {
@@ -21,7 +21,7 @@ public class HexStringCipher implements StringCipher {
   }
 
   @Override
-  public String ee(String value) {
+  public String ee(String value, String k, String iv) {
     byte[] bytes = value.getBytes();
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < bytes.length; i++) {

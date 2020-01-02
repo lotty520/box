@@ -9,7 +9,7 @@ import com.github.box.util.CipherUtil;
 public class Base64StringCipher implements StringCipher {
 
   @Override
-  public String dd(String value) {
+  public String dd(String value, String k, String i) {
     byte[] bytes = CipherUtil.callAndroidBase64Decode(value);
     if (bytes != null) {
       return new String(bytes);
@@ -18,7 +18,7 @@ public class Base64StringCipher implements StringCipher {
   }
 
   @Override
-  public String ee(String value) {
+  public String ee(String value, String k, String i) {
     return new String(java.util.Base64.getEncoder().encode(value.getBytes()));
   }
 }

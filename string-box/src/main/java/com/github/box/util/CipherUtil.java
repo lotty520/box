@@ -37,6 +37,9 @@ public class CipherUtil {
 
   /**
    * 获取随机字符序列
+   *
+   * @param length 获取的长度
+   * @return 结果
    */
   public static String randomString(int length) {
     StringBuilder builder = new StringBuilder();

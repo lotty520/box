@@ -6,7 +6,7 @@
     android:layout_gravity="center_horizontal"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".MainActivity"
+    tools:context="com.github.boxapp.MainActivity"
     >
 
   <Button

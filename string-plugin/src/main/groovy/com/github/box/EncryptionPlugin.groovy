@@ -34,7 +34,6 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
     println("      box插件      ")
     println("=======================")
 
-
     if (!project.android) {
       throw new IllegalStateException(
           'Must apply \'com.android.application\' or \'com.android.library\' first!')
@@ -49,7 +48,7 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
     project.extensions.create(EXT, PluginConfig)
 //    def libVersion = project.rootProject.properties.get("lib")
 //    def libImpl = 'com.github.box:string:' + libVersion + "@jar"
-    def libImpl = "com.github.box:string:1.0.3@jar"
+        def libImpl = "com.github.box:string:1.0.5@jar"
     def list = project.getConfigurations().toList().iterator()
     while (list.hasNext()) {
       def config = list.next().getName()
@@ -221,26 +220,42 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
    * @return 是否需要处理in
    */
   private static boolean checkClassFile(String name, PluginConfig config) {
-    def postfix = name.endsWith(".class")
-    def self = name.startsWith("com.github.box")
-    if (!postfix) {
-      return false
-    }
-    if (self) {
-      return false
-    }
-    String[] exclude = config.exclude
+    String realClassName = name.replace("/", ".")
+
+    def start = realClassName.startsWith("R.") || realClassName.startsWith("R\$")
+    def sys = "BuildConfig.class".equals(realClassName) || realClassName.startsWith("android")
+
+    def postfix = realClassName.endsWith(".class")
+    def self = realClassName.startsWith("com.github.box.")
+
+    // 最先判定包含
+    boolean interrupt = false
     String[] include = config.include
-    exclude.each { String ex ->
-      if (name.startsWith(ex)) {
-        return false
-      }
-    }
     include.each { String inc ->
-      if (name.startsWith(inc)) {
-        return true
+      if (realClassName.startsWith(inc)) {
+        interrupt = true
+        return
       }
     }
+    if (interrupt) {
+      return true
+    }
+
+    if (!postfix || start || sys || self) {
+      return false
+    }
+
+    String[] exclude = config.exclude
+    exclude.each { String ex ->
+      if (realClassName.startsWith(ex)) {
+        interrupt = true
+        return
+      }
+    }
+    if (interrupt) {
+      return false
+    }
+
     return true
   }
 }

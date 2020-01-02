@@ -7,23 +7,24 @@ import com.github.box.impl.HexStringCipher;
 import com.github.box.impl.XorStringCipher;
 
 public class StringCipherFactory {
-    private final static String TYPE_BASE64 = "base64";
-    private final static String TYPE_XOR = "xor";
-    private final static String TYPE_HEX = "hex";
-    private final static String TYPE_AES = "aes";
+  public final static int XOR_KEY_SIZE = 8;
+  public final static int AES_KEY_SIZE = 16;
+  public final static int ZERO_KEY_SIZE = 0;
+  private final static String TYPE_BASE64 = "base64";
+  private final static String TYPE_XOR = "xor";
+  private final static String TYPE_HEX = "hex";
+  private final static String TYPE_AES = "aes";
 
-
-    public static StringCipher create(String type) {
-        if (TYPE_BASE64.equals(type)) {
-            return new Base64StringCipher();
-        } else if (TYPE_XOR.equals(type)) {
-            return new XorStringCipher();
-        } else if (TYPE_HEX.equals(type)) {
-            return new HexStringCipher();
-        } else if (TYPE_AES.equals(type)) {
-            return new AesStringCipher();
-        }
-        return new Base64StringCipher();
+  public static StringCipher create(String type) {
+    if (TYPE_BASE64.equals(type)) {
+      return new Base64StringCipher();
+    } else if (TYPE_XOR.equals(type)) {
+      return new XorStringCipher();
+    } else if (TYPE_HEX.equals(type)) {
+      return new HexStringCipher();
+    } else if (TYPE_AES.equals(type)) {
+      return new AesStringCipher();
     }
-
+    return new Base64StringCipher();
+  }
 }

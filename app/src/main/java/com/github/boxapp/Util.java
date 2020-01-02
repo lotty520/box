@@ -1,4 +1,4 @@
-package com.github.box;
+package com.github.boxapp;
 
 import android.util.Log;
 
