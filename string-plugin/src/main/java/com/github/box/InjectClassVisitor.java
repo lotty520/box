@@ -84,7 +84,10 @@ public class InjectClassVisitor extends ClassVisitor {
 
   @Override public void visitEnd() {
     if (!hasClinit && fieldPairs.size() > 0) {
-      visitMethod(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null);
+      MethodVisitor mv = visitMethod(Opcodes.ACC_STATIC, CLINIT, "()V", null, null);
+      mv.visitCode();
+      mv.visitMaxs(3, 0);
+      mv.visitEnd();
     }
     super.visitEnd();
   }

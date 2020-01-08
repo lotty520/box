@@ -48,7 +48,7 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
     project.extensions.create(EXT, PluginConfig)
     //    def libVersion = project.rootProject.properties.get("lib")
     //    def libImpl = 'com.github.box:string:' + libVersion + "@jar"
-    def libImpl = "com.github.box:string:1.0.6@jar"
+    def libImpl = "com.github.box:string:1.1.1@jar"
     def list = project.getConfigurations().toList().iterator()
     while (list.hasNext()) {
       def config = list.next().getName()

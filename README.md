@@ -1,10 +1,10 @@
-## box 1.0.6
+## box 1.1.1
 ### 一款基于gradle插件实现对android项目中的字符串加密项目
 项目基于TransformApi和Gradle Plugin，支持`gradle1.5.0`及以上版本
 
-插件Groovy 依赖路径为：`com.github.box:plugin:1.1.0`
+插件Groovy 依赖路径为：`com.github.box:plugin:1.1.1`
 
-加解密库Groovy 依赖路径为：`com.github.box:string:1.0.6`
+加解密库Groovy 依赖路径为：`com.github.box:string:1.1.1`
 
 插件名称：`encryption `
 
@@ -16,7 +16,7 @@
 dependencies {
     classpath 'com.android.tools.build:gradle:3.5.3'
     // 插件路径
-    classpath "com.github.box:plugin:1.1.0"
+    classpath "com.github.box:plugin:1.1.1"
     // NOTE: Do not place your application dependencies here; they belong
     // in the individual module build.gradle files
   }
@@ -41,7 +41,7 @@ apply plugin: 'encryption'
 
 1. 显示通知app方集成Lib:
 ```
-implementation 'com.github.box:string:1.0.6'
+implementation 'com.github.box:string:1.1.1'
 ```
 
 需要注意的是，Lib版本应该与Plugin版本保持一致
@@ -49,7 +49,7 @@ implementation 'com.github.box:string:1.0.6'
 2. 将加解密库文件Jar打包到SDK的`libs`中，添加运行时依赖：
 
 ```
-  runtimeOnly files('libs/string-1.0.6.jar')
+    implementation files('libs/string-1.1.1.jar')
 
 ```
 文件位置：项目目录`app-lib/libs`中。具体集成方式可以参照项目中module `app-lib` 的集成方式
