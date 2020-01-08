@@ -46,9 +46,9 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
       throw new IllegalStateException("'android' or 'android-library' plugin required.")
     }
     project.extensions.create(EXT, PluginConfig)
-//    def libVersion = project.rootProject.properties.get("lib")
-//    def libImpl = 'com.github.box:string:' + libVersion + "@jar"
-        def libImpl = "com.github.box:string:1.0.5@jar"
+    //    def libVersion = project.rootProject.properties.get("lib")
+    //    def libImpl = 'com.github.box:string:' + libVersion + "@jar"
+    def libImpl = "com.github.box:string:1.0.6@jar"
     def list = project.getConfigurations().toList().iterator()
     while (list.hasNext()) {
       def config = list.next().getName()
@@ -103,9 +103,9 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
 
     PluginConfig config = mProject.extensions.getByName(EXT)
     println("===============config below================")
-    println(config.include)
-    println(config.exclude)
-    println(config.encType)
+    println("include: " + config.include)
+    println("exclude: " + config.exclude)
+    println("encType: " + config.encType)
     //删除之前的输出
     if (outputProvider != null) {
       outputProvider.deleteAll()
@@ -134,7 +134,7 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
       //列出目录所有文件（包含子文件夹，子文件夹内文件）
       directoryInput.file.eachFileRecurse { File file ->
         def name = file.name
-        if (checkClassFile(name, config)) {
+        if (file.isFile() && checkClassInDir(name, file.absolutePath, config)) {
           ClassReader classReader = new ClassReader(file.bytes)
           ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
           ClassVisitor cv = new InjectClassVisitor(classWriter, config)
@@ -183,7 +183,7 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
         //将当前entry添加到临时文件中
         jarOutputStream.putNextEntry(outEntry)
         //插桩class
-        if (checkClassFile(name, config)) {
+        if (checkClassInJar(name, config)) {
           ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream))
           ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
           ClassVisitor cv = new InjectClassVisitor(classWriter, config)
@@ -219,7 +219,7 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
    * @param fileName 文件名
    * @return 是否需要处理in
    */
-  private static boolean checkClassFile(String name, PluginConfig config) {
+  private static boolean checkClassInJar(String name, PluginConfig config) {
     String realClassName = name.replace("/", ".")
 
     def start = realClassName.startsWith("R.") || realClassName.startsWith("R\$")
@@ -248,6 +248,52 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
     String[] exclude = config.exclude
     exclude.each { String ex ->
       if (realClassName.startsWith(ex)) {
+        interrupt = true
+        return
+      }
+    }
+    if (interrupt) {
+      return false
+    }
+
+    return true
+  }
+
+  /**
+   * 检查class文件是否需要处理,只处理需要的class文件
+   * @param fileName 文件名
+   * @return 是否需要处理in
+   */
+  private static boolean checkClassInDir(String name, String path, PluginConfig config) {
+    String realClassName = name.replace("/", ".")
+    String realPath = path.replace("/", ".")
+
+    def start = realClassName.startsWith("R.") || realClassName.startsWith("R\$")
+    def sys = "BuildConfig.class".equals(realClassName) || realClassName.startsWith("android")
+
+    def postfix = realClassName.endsWith(".class")
+    def self = realClassName.startsWith("com.github.box.")
+
+    if (!postfix || start || sys || self) {
+      return false
+    }
+
+    // 最先判定包含
+    boolean interrupt = false
+    String[] include = config.include
+    include.each { String inc ->
+      if (realClassName.startsWith(inc) || realPath.contains(inc)) {
+        interrupt = true
+        return
+      }
+    }
+    if (interrupt) {
+      return true
+    }
+
+    String[] exclude = config.exclude
+    exclude.each { String ex ->
+      if (realClassName.startsWith(ex) || realPath.contains(ex)) {
         interrupt = true
         return
       }
