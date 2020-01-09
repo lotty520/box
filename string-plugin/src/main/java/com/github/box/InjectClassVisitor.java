@@ -86,6 +86,7 @@ public class InjectClassVisitor extends ClassVisitor {
     if (!hasClinit && fieldPairs.size() > 0) {
       MethodVisitor mv = visitMethod(Opcodes.ACC_STATIC, CLINIT, "()V", null, null);
       mv.visitCode();
+      mv.visitInsn(Opcodes.RETURN);
       mv.visitMaxs(3, 0);
       mv.visitEnd();
     }
