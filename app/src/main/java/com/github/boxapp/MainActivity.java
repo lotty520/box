@@ -1,8 +1,16 @@
 package com.github.boxapp;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.View;
 import androidx.fragment.app.FragmentActivity;
+import com.github.server.ITestInterface;
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
 
@@ -15,6 +23,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     findViewById(R.id.hex).setOnClickListener(this);
     findViewById(R.id.xor).setOnClickListener(this);
     findViewById(R.id.aes).setOnClickListener(this);
+    findViewById(R.id.aidl).setOnClickListener(this);
   }
 
   @Override
@@ -55,8 +64,33 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
       //  Log.e("cipher", "AES解密：" + aesDecrypt);
       //
       //  break;
+      case R.id.aidl:
+        Intent intent = new Intent();
+        intent.setAction("com.github.service.ACTION");
+        ComponentName component =
+            new ComponentName("com.github.server", "com.github.server.StringCipherService");
+        intent.setComponent(component);
+        Log.e("wh", "client ready to bind");
+        bindService(intent, new Conn(), Context.BIND_AUTO_CREATE);
       default:
         break;
+    }
+  }
+
+  static class Conn implements ServiceConnection {
+
+    @Override public void onServiceConnected(ComponentName name, IBinder service) {
+      ITestInterface remote = ITestInterface.Stub.asInterface(service);
+      try {
+        String value = remote.romoteValue();
+        Log.e("wh", "value return from service: " + value);
+      } catch (RemoteException e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Override public void onServiceDisconnected(ComponentName name) {
+
     }
   }
 }

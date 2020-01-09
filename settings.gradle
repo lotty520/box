@@ -1,1 +1,1 @@
-include ':app', ':string-box', ':string-plugin', ':app-lib'
+include ':app', ':string-box', ':string-plugin', ':app-lib', ':server'

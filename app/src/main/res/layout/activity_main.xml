@@ -38,5 +38,12 @@
       android:layout_marginTop="20dp"
       android:text="Aes"
       />
+  <Button
+      android:id="@+id/aidl"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      android:text="AIDL调用"
+      />
 
 </LinearLayout>
