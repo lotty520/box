@@ -14,4 +14,9 @@ public class PluginConfig {
      * 选择的加解密类型
      */
     public String encType;
+
+    /**
+     * 自定义解密的包名
+     */
+    public String pkg;
 }

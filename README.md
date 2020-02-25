@@ -1,8 +1,8 @@
-## box 1.1.1
+## box 1.1.2
 ### 一款基于gradle插件实现对android项目中的字符串加密项目
 项目基于TransformApi和Gradle Plugin，支持`gradle1.5.0`及以上版本
 
-插件Groovy 依赖路径为：`com.github.box:plugin:1.1.1`
+插件Groovy 依赖路径为：`com.github.box:plugin:1.1.2`
 
 加解密库Groovy 依赖路径为：`com.github.box:string:1.1.1`
 
@@ -16,17 +16,21 @@
 dependencies {
     classpath 'com.android.tools.build:gradle:3.5.3'
     // 插件路径
-    classpath "com.github.box:plugin:1.1.1"
+    classpath "com.github.box:plugin:1.1.2"
     // NOTE: Do not place your application dependencies here; they belong
     // in the individual module build.gradle files
   }
 ```
 
 #### Application 以及 Module 集成
-在待集成模块的`build.gradle`中引入插件即可
+**需要注意的是：插件自1.1.2版本开始，不在默认添加插件Lib的构件时依赖，需要开发者在项目中手动添加Lib的依赖**
+
+在待集成模块的`build.gradle`中引入插件，添加Lib依赖
 
 ```
 apply plugin: 'encryption'
+...
+implementation 'com.github.box:string:1.1.1'
 ```
 
 
@@ -44,7 +48,7 @@ apply plugin: 'encryption'
 implementation 'com.github.box:string:1.1.1'
 ```
 
-需要注意的是，Lib版本应该与Plugin版本保持一致
+需要注意的是，Lib版本应该与Plugin版本保持对应(目前Plugin版本1.1.2，Lib版本1.1.1)
 
 2. 将加解密库文件Jar打包到SDK的`libs`中，添加运行时依赖：
 
@@ -60,6 +64,7 @@ stringExt {
   encType = "base64"
   exclude = ["androidx"]
   include = ["com.github.boxapp"]
+  pkg = "com.github.box.XX"
 }
 ```
 
@@ -70,6 +75,7 @@ stringExt {
 encType|字符串|加密类型：目前支持：base64、hex、xor、aes
 exclude|字符数组|声明不参加加密的类名路径：startWith匹配规则
 include|字符数组|声明强制参与加密的类名路径：startWith匹配规则
+pkg|字符串|声明参与解密的类名路径：全匹配规则(不建议配置)
 
 ### 加密规则说明
 1. Base64 编码采用的NO_WRAP模式，且解密方法是通过反射调用的`android.util.Base64`下的静态方法，所以不适用通用java项目(主要是因为java base64api 在android sdk api26 以后才支持)

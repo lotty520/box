@@ -25,9 +25,9 @@ public class InjectMethodVisitor extends MethodVisitor {
   private final static String STRING_DE_METHOD_XOR = "vx";
   private final static Map<String, String> METHOD_MAP = new HashMap<>(4);
   private final static Map<String, Integer> KEY_SIZE_MAP = new HashMap<>(4);
-  private final static String STRING_ENC_OWNER = "com/github/box/XxVv";
   private final static String STRING_ENC_P =
       "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;";
+  private static String STRING_ENC_OWNER = "com/github/box/XxVv";
 
   static {
     METHOD_MAP.put("base64", STRING_DE_METHOD_BASE64);
@@ -53,6 +53,9 @@ public class InjectMethodVisitor extends MethodVisitor {
     this.pairs = pairs;
     this.method = method;
     this.config = config;
+    if (config != null && config.pkg != null && config.pkg.trim() != "") {
+      STRING_ENC_OWNER = config.pkg.replace(".","/");
+    }
   }
 
   @Override
@@ -69,7 +72,7 @@ public class InjectMethodVisitor extends MethodVisitor {
         String k = CipherUtil.randomString(length);
         String iv = CipherUtil.randomString(length);
 
-        String encryption = cipher(config.encType).ee(value,k,iv);
+        String encryption = cipher(config.encType).ee(value, k, iv);
         Log.e("plugin", cls + " || " + value + "--->" + encryption);
         mv.visitLdcInsn(encryption);
         mv.visitLdcInsn(k);
@@ -88,7 +91,7 @@ public class InjectMethodVisitor extends MethodVisitor {
       int length = randomLength(config.encType);
       String k = CipherUtil.randomString(length);
       String iv = CipherUtil.randomString(length);
-      String encryption = cipher(config.encType).ee((String) cst,k,iv);
+      String encryption = cipher(config.encType).ee((String) cst, k, iv);
       Log.e("plugin", cls + " || " + cst + "--->" + encryption);
       mv.visitLdcInsn(encryption);
       mv.visitLdcInsn(k);

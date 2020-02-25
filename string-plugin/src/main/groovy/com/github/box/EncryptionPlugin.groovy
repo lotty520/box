@@ -46,22 +46,6 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
       throw new IllegalStateException("'android' or 'android-library' plugin required.")
     }
     project.extensions.create(EXT, PluginConfig)
-    //    def libVersion = project.rootProject.properties.get("lib")
-    //    def libImpl = 'com.github.box:string:' + libVersion + "@jar"
-    def libImpl = "com.github.box:string:1.1.1@jar"
-    def list = project.getConfigurations().toList().iterator()
-    while (list.hasNext()) {
-      def config = list.next().getName()
-      if ("implementation" == config) {
-        if (app) {
-          project.getDependencies().add(config, libImpl)
-          println("app implementation:" + libImpl)
-        } else if (lib) {
-          project.getDependencies().add(config, libImpl)
-          println("lib implementation:" + libImpl)
-        }
-      }
-    }
     if (app) {
       project.extensions.getByType(AppExtension).registerTransform(this)
     } else {
@@ -106,6 +90,7 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
     println("include: " + config.include)
     println("exclude: " + config.exclude)
     println("encType: " + config.encType)
+    println("pkg: " + config.pkg)
     //删除之前的输出
     if (outputProvider != null) {
       outputProvider.deleteAll()
