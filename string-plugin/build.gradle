@@ -11,6 +11,7 @@ compileGroovy {
 
 def libVersion = rootProject.properties.get("lib")
 def libImpl = 'com.github.box:string:' + libVersion + "@jar"
+//def libImpl = 'com.github.box:string:1.1.1@jar'
 // 依赖
 dependencies {
     implementation gradleApi()
