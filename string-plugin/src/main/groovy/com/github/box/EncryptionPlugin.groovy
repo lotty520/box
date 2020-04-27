@@ -87,10 +87,11 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
 
     PluginConfig config = mProject.extensions.getByName(EXT)
     println("===============config below================")
-    println("include: " + config.include)
-    println("exclude: " + config.exclude)
-    println("encType: " + config.encType)
-    println("pkg: " + config.pkg)
+    println("include: " + (config.include == null ? "[]" : config.include))
+    println("exclude: " + ((config.exclude == null ? "[]" : config.exclude)))
+    println("encType: " + (config.encType == null ? "" : config.encType))
+    println("pkg: " + (config.pkg == null ? "" : config.pkg))
+    println("logOpen: " + config.logOpen)
     //删除之前的输出
     if (outputProvider != null) {
       outputProvider.deleteAll()

@@ -54,7 +54,7 @@ public class InjectMethodVisitor extends MethodVisitor {
     this.method = method;
     this.config = config;
     if (config != null && config.pkg != null && config.pkg.trim() != "") {
-      STRING_ENC_OWNER = config.pkg.replace(".","/");
+      STRING_ENC_OWNER = config.pkg.replace(".", "/");
     }
   }
 
@@ -73,7 +73,9 @@ public class InjectMethodVisitor extends MethodVisitor {
         String iv = CipherUtil.randomString(length);
 
         String encryption = cipher(config.encType).ee(value, k, iv);
-        Log.e("plugin", cls + " || " + value + "--->" + encryption);
+        if (config.logOpen) {
+          Log.i("plugin", cls + " || " + value + "--->" + encryption);
+        }
         mv.visitLdcInsn(encryption);
         mv.visitLdcInsn(k);
         mv.visitLdcInsn(iv);
@@ -92,7 +94,9 @@ public class InjectMethodVisitor extends MethodVisitor {
       String k = CipherUtil.randomString(length);
       String iv = CipherUtil.randomString(length);
       String encryption = cipher(config.encType).ee((String) cst, k, iv);
-      Log.e("plugin", cls + " || " + cst + "--->" + encryption);
+      if (config.logOpen) {
+        Log.i("plugin", cls + " || " + cst + "--->" + encryption);
+      }
       mv.visitLdcInsn(encryption);
       mv.visitLdcInsn(k);
       mv.visitLdcInsn(iv);
