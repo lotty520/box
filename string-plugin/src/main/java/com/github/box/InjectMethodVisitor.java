@@ -74,7 +74,7 @@ public class InjectMethodVisitor extends MethodVisitor {
 
         String encryption = cipher(config.encType).ee(value, k, iv);
         if (config.logOpen) {
-          Log.i("plugin", cls + " || " + value + "--->" + encryption);
+          Log.e("plugin", cls + " || " + value + "--->" + encryption);
         }
         mv.visitLdcInsn(encryption);
         mv.visitLdcInsn(k);
@@ -95,7 +95,7 @@ public class InjectMethodVisitor extends MethodVisitor {
       String iv = CipherUtil.randomString(length);
       String encryption = cipher(config.encType).ee((String) cst, k, iv);
       if (config.logOpen) {
-        Log.i("plugin", cls + " || " + cst + "--->" + encryption);
+        Log.e("plugin", cls + " || " + cst + "--->" + encryption);
       }
       mv.visitLdcInsn(encryption);
       mv.visitLdcInsn(k);
