@@ -9,8 +9,7 @@ compileGroovy {
     options.encoding = "UTF-8"
 }
 
-def libVersion = rootProject.properties.get("lib")
-def libImpl = 'com.github.box:string:' + libVersion + "@jar"
+def libImpl = 'com.github.box:string:' + rootProject.properties.get("lib") + "@jar"
 //def libImpl = 'com.github.box:string:1.1.1@jar'
 // 依赖
 dependencies {

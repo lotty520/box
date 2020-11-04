@@ -29,7 +29,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
   @Override
   protected void onResume() {
     super.onResume();
-    new Util().print();
+    new StringPool().print();
   }
 
   @Override public void onClick(View v) {

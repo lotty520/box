@@ -3,7 +3,7 @@ package com.github.boxapp;
 import android.util.Log;
 
 
-public class Util {
+public class StringPool {
     private static final String S1 = "this is static final const variable";
 
     private static String S2 = "this is static const variable";
