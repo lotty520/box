@@ -1,10 +1,10 @@
 apply plugin: 'com.android.library'
-//apply plugin: 'encryption'
-//
-//stringExt {
-//  encType = "base64"
-//  include = ["com.github.box"]
-//}
+apply plugin: 'encryption'
+
+stringExt {
+  encType = "base64"
+  include = ["com.github.applib.Lib"]
+}
 
 android {
   compileSdkVersion 29
@@ -26,6 +26,6 @@ android {
 }
 
 dependencies {
-//  implementation fileTree(dir: 'libs', include: ['*.jar'])
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation 'androidx.appcompat:appcompat:1.1.0'
 }

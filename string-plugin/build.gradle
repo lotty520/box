@@ -9,13 +9,13 @@ compileGroovy {
     options.encoding = "UTF-8"
 }
 
-def libImpl = 'com.github.box:string:' + rootProject.properties.get("lib") + "@jar"
-//def libImpl = 'com.github.box:string:1.1.1@jar'
+//def libImpl = 'com.github.box:string:' + rootProject.properties.get("lib") + "@jar"
+def libImpl = 'com.github.box:string:1.1.2@jar'
 // 依赖
 dependencies {
     implementation gradleApi()
-//    implementation libImpl
-    implementation project(':string-box')
+    implementation libImpl
+//    implementation project(':string-box')
     implementation 'com.android.tools.build:gradle:3.1.0'
 }
 
