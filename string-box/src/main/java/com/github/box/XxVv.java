@@ -11,24 +11,20 @@ public class XxVv {
    * base64
    *
    * @param v 密文
-   * @param k Key
-   * @param i Iv
    * @return 明文
    */
-  public static String xr(String v, String k, String i) {
-    return new Base64StringCipher().dd(v, k, i);
+  public static String xr(String v) {
+    return new Base64StringCipher().dd(v, null, null);
   }
 
   /**
    * hex
    *
    * @param v 密文
-   * @param k Key
-   * @param i Iv
    * @return 明文
    */
-  public static String rx(String v, String k, String i) {
-    return new HexStringCipher().dd(v, k, i);
+  public static String rx(String v) {
+    return new HexStringCipher().dd(v, null, null);
   }
 
   /**
@@ -48,10 +44,9 @@ public class XxVv {
    *
    * @param v 密文
    * @param k Key
-   * @param i Iv
    * @return 明文
    */
-  public static String vx(String v, String k, String i) {
-    return new XorStringCipher().dd(v, k, i);
+  public static String vx(String v, String k) {
+    return new XorStringCipher().dd(v, k, null);
   }
 }

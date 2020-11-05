@@ -22,14 +22,19 @@ public class InjectMethodVisitor extends MethodVisitor {
     private final static String STATIC_BLOCK_METHOD = "<clinit>";
 
     private final static String TYPE_BASE64 = "base64";
-    private final static String TYPE_XOR = "xor";
     private final static String TYPE_HEX = "hex";
+    private final static String TYPE_XOR = "xor";
     private final static String TYPE_AES = "aes";
+
+    private final static int ZERO_KEY_SIZE = 0;
+    private final static int XOR_KEY_SIZE = 8;
+    private final static int AES_KEY_SIZE = 16;
 
     private final static String STRING_DE_METHOD_BASE64 = "xr";
     private final static String STRING_DE_METHOD_HEX = "rx";
     private final static String STRING_DE_METHOD_AES = "vv";
     private final static String STRING_DE_METHOD_XOR = "vx";
+
     private final static Map<String, String> METHOD_MAP = new HashMap<>(4);
     private final static Map<String, Integer> KEY_SIZE_MAP = new HashMap<>(4);
     private final static String STRING_ENC_P_3 =
@@ -44,25 +49,21 @@ public class InjectMethodVisitor extends MethodVisitor {
     private static String STRING_ENC_OWNER = "com/github/box/XxVv";
 
     static {
-        METHOD_MAP.put("base64", STRING_DE_METHOD_BASE64);
-        METHOD_MAP.put("xor", STRING_DE_METHOD_XOR);
-        METHOD_MAP.put("hex", STRING_DE_METHOD_HEX);
-        METHOD_MAP.put("aes", STRING_DE_METHOD_AES);
+        METHOD_MAP.put(TYPE_BASE64, STRING_DE_METHOD_BASE64);
+        METHOD_MAP.put(TYPE_XOR, STRING_DE_METHOD_XOR);
+        METHOD_MAP.put(TYPE_HEX, STRING_DE_METHOD_HEX);
+        METHOD_MAP.put(TYPE_AES, STRING_DE_METHOD_AES);
 
-        KEY_SIZE_MAP.put("base64", StringCipherFactory.ZERO_KEY_SIZE);
-        KEY_SIZE_MAP.put("xor", StringCipherFactory.XOR_KEY_SIZE);
-        KEY_SIZE_MAP.put("hex", StringCipherFactory.ZERO_KEY_SIZE);
-        KEY_SIZE_MAP.put("aes", StringCipherFactory.AES_KEY_SIZE);
+        KEY_SIZE_MAP.put(TYPE_BASE64, ZERO_KEY_SIZE);
+        KEY_SIZE_MAP.put(TYPE_XOR, XOR_KEY_SIZE);
+        KEY_SIZE_MAP.put(TYPE_HEX, ZERO_KEY_SIZE);
+        KEY_SIZE_MAP.put(TYPE_AES, AES_KEY_SIZE);
     }
 
     private String cls;
     private String method;
     private Map<String, String> pairs;
     private PluginConfig config;
-
-    private String owner = STRING_ENC_OWNER;
-
-    private String userDefinedMethod;
 
     public InjectMethodVisitor(int api, MethodVisitor mv, String cls, String method,
                                PluginConfig config, Map<String, String> pairs) {
@@ -71,14 +72,7 @@ public class InjectMethodVisitor extends MethodVisitor {
         this.pairs = pairs;
         this.method = method;
         this.config = config;
-        if (config.pkg != null && !"".equals(config.pkg.trim())) {
-            owner = config.pkg.replace(".", "/");
-        }
-        if (config.method != null && !"".equals(config.method.trim())) {
-            userDefinedMethod = config.method;
-        }
     }
-
 
     @Override
     public void visitCode() {
@@ -118,7 +112,15 @@ public class InjectMethodVisitor extends MethodVisitor {
     }
 
     private String generateKey() {
-        if (config.encType.equals(TYPE_XOR) || config.encType.equals(TYPE_AES)) {
+        if (TYPE_XOR.equals(config.encType) || TYPE_AES.equals(config.encType)) {
+            int length = confirmLength();
+            return CipherUtil.randomString(length);
+        }
+        return "";
+    }
+
+    private String generateIv() {
+        if (TYPE_AES.equals(config.encType)) {
             int length = confirmLength();
             return CipherUtil.randomString(length);
         }
@@ -129,16 +131,8 @@ public class InjectMethodVisitor extends MethodVisitor {
         if (KEY_SIZE_MAP.containsKey(config.encType)) {
             return KEY_SIZE_MAP.get(config.encType);
         } else {
-            return StringCipherFactory.ZERO_KEY_SIZE;
+            return ZERO_KEY_SIZE;
         }
-    }
-
-    private String generateIv() {
-        if (config.encType.equals(TYPE_AES)) {
-            int length = confirmLength();
-            return CipherUtil.randomString(length);
-        }
-        return "";
     }
 
     private StringCipher cipher(String cipherType) {
@@ -146,9 +140,9 @@ public class InjectMethodVisitor extends MethodVisitor {
     }
 
     private void inject(String encryption, String k, String iv) {
-        if (config.encType.equals(TYPE_XOR)) {
+        if (TYPE_XOR.equals(config.encType)) {
             injectWithOnlyKey(encryption, k);
-        } else if (config.encType.equals(TYPE_AES)) {
+        } else if (TYPE_AES.equals(config.encType)) {
             injectWithIv(encryption, k, iv);
         } else {
             injectWithSelf(encryption);
@@ -159,32 +153,39 @@ public class InjectMethodVisitor extends MethodVisitor {
         mv.visitLdcInsn(encryption);
         mv.visitLdcInsn(k);
         mv.visitLdcInsn(iv);
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, owner, methodString(config.encType),
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC, getDecryptClass(), getDecryptMethod(),
                 STRING_ENC_P_3, false);
     }
 
     private void injectWithOnlyKey(String encryption, String k) {
         mv.visitLdcInsn(encryption);
         mv.visitLdcInsn(k);
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, owner, methodString(config.encType),
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC, getDecryptClass(), getDecryptMethod(),
                 STRING_ENC_P_2, false);
     }
 
-    private String methodString(String type) {
-        if (userDefinedMethod != null && !"".equals(userDefinedMethod.trim())) {
-            return userDefinedMethod;
-        }
-        if (METHOD_MAP.containsKey(type)) {
-            return METHOD_MAP.get(type);
+    private void injectWithSelf(String encryption) {
+        mv.visitLdcInsn(encryption);
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC, getDecryptClass(), getDecryptMethod(),
+                STRING_ENC_P_1, false);
+    }
+
+    private String getDecryptMethod() {
+        if (!TextUtil.isEmpty(config.pkg) && !TextUtil.isEmpty(config.method)) {
+            return config.method;
+        } else if (METHOD_MAP.containsKey(config.encType)) {
+            return METHOD_MAP.get(config.encType);
         } else {
             return STRING_DE_METHOD_BASE64;
         }
     }
 
-    private void injectWithSelf(String encryption) {
-        mv.visitLdcInsn(encryption);
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, owner, methodString(config.encType),
-                STRING_ENC_P_1, false);
+    private String getDecryptClass() {
+        if (TextUtil.isEmpty(config.pkg) || TextUtil.isEmpty(config.method)) {
+            return STRING_ENC_OWNER;
+        } else {
+            return config.pkg.replace(".","/");
+        }
     }
 
 }

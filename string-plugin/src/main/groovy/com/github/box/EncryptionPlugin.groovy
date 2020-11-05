@@ -201,7 +201,7 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
     }
 
     private static boolean checkClassInJar(String name, PluginConfig config) {
-        //file in jar like: com/github/applib/Lib.class
+        //eg: file in jar like: com/github/applib/Lib.class
         String dotClassName = name.replace("/", ".")
         boolean shoot = false;
         if (isClassFile(dotClassName)) {
@@ -219,7 +219,7 @@ class EncryptionPlugin extends Transform implements Plugin<Project> {
     }
 
     private static boolean checkClassInDir(String name, String path, PluginConfig config) {
-        // file in dir/module like: /Users/lotty/android/github/box/app/build/intermediates/classes/debug/com/github/boxapp/StringPool.class::StringPool.class
+        //eg: file in dir/module like: /Users/lotty/android/github/box/app/build/intermediates/classes/debug/com/github/boxapp/StringPool.class::StringPool.class
         String dotClassName = name.replace("/", ".")
         String absPath = path.replace("/", ".")
         boolean shoot = false

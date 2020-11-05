@@ -7,9 +7,7 @@ import com.github.box.impl.HexStringCipher;
 import com.github.box.impl.XorStringCipher;
 
 public class StringCipherFactory {
-  public final static int XOR_KEY_SIZE = 8;
-  public final static int AES_KEY_SIZE = 16;
-  public final static int ZERO_KEY_SIZE = 0;
+
   private final static String TYPE_BASE64 = "base64";
   private final static String TYPE_XOR = "xor";
   private final static String TYPE_HEX = "hex";

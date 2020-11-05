@@ -34,17 +34,7 @@ public class AesStringCipher implements StringCipher {
       if (bytes != null) {
         return new String(cipher.doFinal(bytes));
       }
-    } catch (NoSuchAlgorithmException e) {
-      e.printStackTrace();
-    } catch (NoSuchPaddingException e) {
-      e.printStackTrace();
-    } catch (BadPaddingException e) {
-      e.printStackTrace();
-    } catch (IllegalBlockSizeException e) {
-      e.printStackTrace();
-    } catch (InvalidKeyException e) {
-      e.printStackTrace();
-    } catch (InvalidAlgorithmParameterException e) {
+    } catch (NoSuchAlgorithmException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidKeyException | InvalidAlgorithmParameterException e) {
       e.printStackTrace();
     }
     return "";
@@ -59,17 +49,7 @@ public class AesStringCipher implements StringCipher {
       cipher.init(Cipher.ENCRYPT_MODE, ks, iv);
       byte[] b = cipher.doFinal(value.getBytes());
       return new String(Base64.getEncoder().encode(b));
-    } catch (NoSuchAlgorithmException e) {
-      e.printStackTrace();
-    } catch (InvalidKeyException e) {
-      e.printStackTrace();
-    } catch (InvalidAlgorithmParameterException e) {
-      e.printStackTrace();
-    } catch (NoSuchPaddingException e) {
-      e.printStackTrace();
-    } catch (BadPaddingException e) {
-      e.printStackTrace();
-    } catch (IllegalBlockSizeException e) {
+    } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException e) {
       e.printStackTrace();
     }
     return "";

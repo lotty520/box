@@ -14,7 +14,8 @@ def libImpl = 'com.github.box:string:' + rootProject.properties.get("lib") + "@j
 // 依赖
 dependencies {
     implementation gradleApi()
-    implementation libImpl
+//    implementation libImpl
+    implementation project(':string-box')
     implementation 'com.android.tools.build:gradle:3.1.0'
 }
 

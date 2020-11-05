@@ -2,9 +2,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'encryption'
 
 stringExt {
-    encType = "base64"
+    encType = "aes"
     pkg = "com.github.boxapp.DecryptionUtil"
-    method = "decode"
+//    method = "decode"
     include = ["com.github.boxapp.StringPool"]
     logOpen = true
 }
@@ -35,6 +35,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation files('libs/lib.jar')
+    implementation project(':string-box')
+
     // 当没有配置pkg时，需要手动添加该依赖
 //  implementation libImpl
 
