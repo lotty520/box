@@ -1,4 +1,4 @@
-## box 1.1.4
+## box 1.1.5
 ### 一款对android项目中的字符串进行加密的gradle插件
 项目基于TransformApi和Gradle Plugin，支持`gradle1.5.0`及以上版本
 
@@ -73,6 +73,8 @@ stringExt {
 }
 ```
 
+
+
 配置说明：
 
 字段 | 类型|说明 
@@ -84,6 +86,7 @@ pkg|字符串|声明参与解密的类名：startWith规则(需要和method一�
 method|字符串|声明参与解密的方法名：全等规则(需要和pkg一起配置)
 logOpen|布尔值|配置是否打印日志，日志级别为Error，(此为打包日志，不是运行时日志)
 
+> 需要注意的是pkg和method需要同时配置，若不满足，则会选择加解密jar中的默认类名
 
 ### 加密规则说明
 1. Base64 编码采用的NO_WRAP模式，且解密方法是通过反射调用的`android.util.Base64`下的静态方法，所以不适用通用java项目(主要是因为java base64api 在android sdk api26 以后才支持)
